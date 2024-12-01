@@ -8,3 +8,13 @@ variable "project_name" {
     longname  = "takserver"
   }
 }
+
+variable "ami_id" {
+  description = "Target AMI ID"
+  default     = "ami-045a8ab02aadf4f88"
+}
+
+variable "instance_type" {
+  description = "TAK server instance type"
+  default     = "t2.xlarge"
+}

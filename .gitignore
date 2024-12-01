@@ -1,2 +1,11 @@
+# Files
 *.bkp*
 *.sample
+
+# Terraform
+*.tfstate*
+.terraform
+
+# Secrets
+*.p12
+*.pem
