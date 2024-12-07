@@ -1,6 +1,7 @@
 # Files
 *.bkp*
 *.sample
+*.deb
 
 # Terraform
 *.tfstate*

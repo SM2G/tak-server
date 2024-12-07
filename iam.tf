@@ -1,6 +1,6 @@
 resource "aws_iam_user" "admin" {
   name = "${var.project_name["longname"]}-admin"
-  path = "/users/"
+  path = "/"
 }
 
 # Attach AdministratorAccess policy

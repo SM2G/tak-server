@@ -11,7 +11,7 @@ variable "project_name" {
 
 variable "ami_id" {
   description = "Target AMI ID"
-  default     = "ami-045a8ab02aadf4f88"
+  default     = "ami-045a8ab02aadf4f88" # Ubuntu
 }
 
 variable "instance_type" {
