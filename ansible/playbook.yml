@@ -1,0 +1,80 @@
+---
+- name: Deploy TAK Server
+  hosts: tak_servers
+  become: true
+  vars:
+    tak_version: "4.8"
+    tak_port: 8089
+    cert_path: "/opt/tak/certs"
+    admin_password: "{{ vault_admin_password }}"
+
+  tasks:
+    - name: Install Java
+      package:
+        name: openjdk-11-jdk
+        state: present
+
+    - name: Create TAK directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /opt/tak
+        - "{{ cert_path }}"
+        - /opt/tak/data
+
+    - name: Download TAK Server
+      get_url:
+        url: "https://tak.gov/downloads/tak-server-{{ tak_version }}-RELEASE.zip"
+        dest: /opt/tak/tak-server.zip
+        mode: '0644'
+
+    - name: Extract TAK Server
+      unarchive:
+        src: /opt/tak/tak-server.zip
+        dest: /opt/tak
+        remote_src: yes
+
+    - name: Generate certificates
+      command: >
+        /opt/tak/utils/certificate-generation.sh 
+        --ca-name "TAK CA" 
+        --cert-dir {{ cert_path }}
+      args:
+        creates: "{{ cert_path }}/ca.pem"
+
+    - name: Configure TAK Server
+      template:
+        src: CoreConfig.xml.j2
+        dest: /opt/tak/conf/CoreConfig.xml
+      notify: restart tak
+
+    - name: Create systemd service
+      copy:
+        dest: /etc/systemd/system/tak.service
+        content: |
+          [Unit]
+          Description=TAK Server
+          After=network.target
+          
+          [Service]
+          Type=simple
+          User=tak
+          ExecStart=/opt/tak/takserver.sh
+          Restart=always
+          
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Start TAK service
+      systemd:
+        name: tak
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart tak
+      systemd:
+        name: tak
+        state: restarted
