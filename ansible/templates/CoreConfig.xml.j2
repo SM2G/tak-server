@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <network>
+        <input>
+            <port>{{ tak_port }}</port>
+        </input>
+    </network>
+    
+    <security>
+        <tls>
+            <keystore>{{ cert_path }}/keystore.jks</keystore>
+            <truststore>{{ cert_path }}/truststore.jks</truststore>
+        </tls>
+    </security>
+    
+    <admin>
+        <password>{{ admin_password }}</password>
+    </admin>
+</Configuration>
